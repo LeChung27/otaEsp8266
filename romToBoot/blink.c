@@ -162,12 +162,7 @@ void blinkenTask(void *pvParameters)
         gpio_write(gpio, 0);
         vTaskDelay(500 / portTICK_PERIOD_MS);
         
-        
-        //for (uint16_t i =0; i< 4096; i++){
-			//chunk[i] = i;
-		//}
-        
-
+	        
 		
         cnt++;
         if (cnt >= 2){
