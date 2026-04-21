@@ -149,12 +149,11 @@ void blinkenTask(void *pvParameters)
     //printf("WiFi connected, got IP\n");
     
 	rboot_config rboot_config = rboot_get_config();
-	
-	/* Validate the OTA slot parameter */
+	///* Validate the OTA slot parameter */
 	printf("ROM hien tai la: %d \n", rboot_config.current_rom);
 	printf("So luong ROM: %d \n", rboot_config.count);
-	printf("Dia chi rom [0] %lu\n", rboot_config.roms[0]);
-	printf("Dia chi rom [1] %lu\n", rboot_config.roms[1]);
+	printf("Dia chi rom [0] 0x%08X\n", rboot_config.roms[0]);
+	printf("Dia chi rom [1] 0x%08X\n", rboot_config.roms[1]);
 	
     while(1) {
         gpio_write(gpio, 1);
@@ -165,7 +164,8 @@ void blinkenTask(void *pvParameters)
 	        
 		
         cnt++;
-        if (cnt >= 2){
+        printf(" Rebooting after %ds...\n", cnt);
+        if (cnt >= 10){
 			
 			//uint32_t offset = 0;
 			//uint32_t write_offs = 0xE2000;
@@ -193,16 +193,19 @@ void blinkenTask(void *pvParameters)
 			//sdk_system_restart();
 			
 			
-			//rboot_rtc_data memrtc;
-			//memrtc.next_mode = MODE_TEMP_ROM;
-			//memrtc.last_mode = MODE_TEMP_ROM;
-			//memrtc.last_rom = 0;
-			//memrtc.temp_rom = 1;
+			rboot_rtc_data memrtc;
+			memrtc.next_mode = MODE_TEMP_ROM;
+			memrtc.last_mode = MODE_TEMP_ROM;
+			memrtc.last_rom = 0;
+			memrtc.temp_rom = 1;
 
-			//rboot_set_rtc_data(&memrtc);
-			//printf("RTC ROM truoc do: %d \n", memrtc.last_rom);
-			//printf("RTC ROM tiep theo: %d \n", memrtc.temp_rom);
-			//sdk_system_restart();
+			rboot_set_rtc_data(&memrtc);
+			printf("RTC ROM truoc do: %d \n", memrtc.last_rom);
+			printf("RTC ROM tiep theo: %d \n", memrtc.temp_rom);
+			
+			printf(" Rebooting...\n ");
+			vTaskDelay(1000 / portTICK_PERIOD_MS);
+			sdk_system_restart();
 		}
         // uint32_t pin_value = gpio_read(12); 
         // printf("pin 12 status: %d\n", pin_value);
